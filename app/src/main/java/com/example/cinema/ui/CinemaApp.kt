@@ -45,6 +45,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cinema.ui.components.IconButtonCinema
 import com.example.cinema.ui.screens.details.DetailsScreen
+import com.example.cinema.ui.screens.favorites.FavoritesScreen
 import com.example.cinema.ui.screens.home.HomeScreen
 import com.example.cinema.ui.theme.DarkBlue
 import com.example.cinema.ui.theme.Primary
@@ -62,8 +63,6 @@ fun CinemaApp() {
     var currentIndex by remember { mutableStateOf(0) }
     val navController = rememberNavController()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-
-    //val modifier =  Modifier.padding( horizontal = 8.dp).padding(top = 16.dp)
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -118,7 +117,7 @@ fun CinemaApp() {
 
                     }
                     composable("favorites") {
-                        //FavoritesScreen()
+                        FavoritesScreen()
                     }
                     composable("details"){
                         DetailsScreen()

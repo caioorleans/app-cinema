@@ -28,52 +28,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.cinema.R
+import com.example.cinema.ui.components.LazyVerticalGridMovies
 import com.example.cinema.ui.theme.Red
 import com.example.cinema.ui.theme.Secondary
-
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HomeScreen(modifier:Modifier = Modifier) {
-    Surface(modifier = modifier.fillMaxSize().padding( horizontal = 8.dp).padding(top = 16.dp)) {
-                    LazyVerticalGridCinema()
-        }
-    }
-
-@Composable
-fun LazyVerticalGridCinema(){
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(128.dp),
-        modifier = Modifier.fillMaxSize().background(Secondary),
-
-        content = {
-            item { ItemCardMovie() }
-            item { ItemCardMovie() }
-            item { ItemCardMovie() }
-            item { ItemCardMovie() }
-            item { ItemCardMovie() }
-        }
+    val listMovies = listOf(
+        R.drawable.ic_launcher_background,
+        R.drawable.ic_launcher_background,
+        R.drawable.ic_launcher_background
     )
-}
 
-
-@Composable
-fun ItemCardMovie() {
-    Box(
-        modifier = Modifier
-            .padding(6.dp)
-            .height(300.dp)
-            .clip(RoundedCornerShape(16.dp))
-        ,
-
-    ) {
-       Image(
-           contentScale = ContentScale.FillBounds,
-           modifier = Modifier.fillMaxSize(),
-           painter = painterResource(id = R.drawable.ic_launcher_background),
-           contentDescription = "",
-
-           )
-
-    }
+    Surface(modifier = modifier.fillMaxSize().padding( horizontal = 8.dp).padding(top = 16.dp)) {
+        LazyVerticalGridMovies(listMovies)
+        }
 }
