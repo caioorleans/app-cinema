@@ -13,15 +13,14 @@ import com.example.cinema.ui.components.LazyVerticalGridMovies
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun HomeScreen(modifier:Modifier = Modifier, moviesUiState: MoviesUiState) {
+fun HomeScreen(moviesUiState: MoviesUiState, modifier:Modifier = Modifier) {
 
-    val listMovies = listOf(
-        R.drawable.ic_launcher_background,
-        R.drawable.ic_launcher_background,
-        R.drawable.ic_launcher_background
-    )
+    Surface(modifier = modifier.fillMaxSize()) {
 
-    Surface(modifier = modifier.fillMaxSize().padding( horizontal = 8.dp).padding(top = 16.dp)) {
-        LazyVerticalGridMovies(listMovies)
+        when (moviesUiState) {
+            is MoviesUiState.Success -> LazyVerticalGridMovies(moviesUiState.result.results)
+            is MoviesUiState.Error -> {}
+            is MoviesUiState.Loading -> {}
+        }
     }
 }

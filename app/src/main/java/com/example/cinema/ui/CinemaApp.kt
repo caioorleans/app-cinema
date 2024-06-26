@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -45,6 +46,7 @@ import com.example.cinema.ui.components.IconButtonCinema
 import com.example.cinema.ui.screens.details.DetailsScreen
 import com.example.cinema.ui.screens.favorites.FavoritesScreen
 import com.example.cinema.ui.screens.home.HomeScreen
+import com.example.cinema.ui.screens.home.MoviesViewModel
 import com.example.cinema.ui.theme.DarkBlue
 import com.example.cinema.ui.theme.Primary
 import com.example.cinema.ui.theme.Red
@@ -105,10 +107,15 @@ fun CinemaApp() {
         Scaffold(
             topBar = { CinemaTopAppBar(scrollBehavior, scope, drawerState, navController) },
         ){
-            Column(Modifier.padding(it).background(Secondary)) {
+            Column(
+                Modifier
+                    .padding(it)
+                    .background(Secondary))
+            {
                 NavHost(navController, startDestination = "home") {
                     composable("home") {
-                       HomeScreen()
+                        val moviesViewModel:MoviesViewModel = viewModel<MoviesViewModel>()
+                        HomeScreen(moviesUiState = moviesViewModel.moviesUiState)
                     }
                     composable("movies") {
                         //MoviesScreen()

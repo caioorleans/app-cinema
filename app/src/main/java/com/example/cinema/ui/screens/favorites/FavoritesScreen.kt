@@ -41,7 +41,7 @@ fun FavoritesScreen(modifier: Modifier = Modifier) {
                 Text(text = "Minha Lista", fontSize = 30.sp, color = White)
             }
 
-            LazyVerticalGridMovies(listMovies, true)
+            //LazyVerticalGridMovies(listMovies, true)
 
 
         }

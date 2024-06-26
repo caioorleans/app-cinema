@@ -9,14 +9,14 @@ import retrofit2.http.Query
 interface TMDBService {
 
     @Headers(
-        "Authorizarion:Bearer $API_KEY",
+        "Authorization:Bearer $API_KEY",
         "Accept:application/json"
     )
     @GET("movie/popular")
-    suspend fun getPopularMovies(@Query("page") page:Int = 0):MoviesResponse
+    suspend fun getPopularMovies(@Query("page") page:Int = 1):MoviesResponse
 
     companion object {
-        const val API_KEY = "641a4a3d282d836b4dc4b484d752b80c"
+        const val API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NDFhNGEzZDI4MmQ4MzZiNGRjNGI0ODRkNzUyYjgwYyIsIm5iZiI6MTcxOTQzMDA5NS41NTYzMDgsInN1YiI6IjY2N2FhNjBmZTFiZDQ4YzA2OTU2N2QwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.BPcFByS9V_Flyb3nsXWeTKTfSaMBCtYw7XdRMJvw4HQ"
     }
 
 }
