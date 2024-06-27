@@ -13,32 +13,58 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role.Companion.Button
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.cinema.R
 import com.example.cinema.ui.data.model.Result
+import com.example.cinema.ui.screens.home.MoviesUiState
+import com.example.cinema.ui.screens.home.MoviesViewModel
+import com.example.cinema.ui.theme.Primary
 import com.example.cinema.ui.theme.Secondary
 import com.example.cinema.ui.theme.White
 
 
 @Composable
-fun LazyVerticalGridMovies(listMovies: List<Result> = listOf(), navController: NavController,  showCloseButtonCards:Boolean = false){
+fun LazyVerticalGridMovies(
+    listMovies: List<Result> = listOf(),
+    navController: NavController,
+    showCloseButtonCards:Boolean = false,
+    nextPage:()->Int
+    ){
+    val moviesViewModel:MoviesViewModel = viewModel<MoviesViewModel>()
+
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(128.dp),
@@ -50,12 +76,18 @@ fun LazyVerticalGridMovies(listMovies: List<Result> = listOf(), navController: N
             .background(Secondary),
     ){
         items(listMovies){
-            ItemCardMovie(movie = it, navController)
+            ItemCardMovie(movie = it, navController, showCloseButtonCards)
         }
+
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            BottomBar(moviesViewModel, nextPage)
+        }
+
     }
 }
 
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ItemCardMovie(movie:Result, navController: NavController, showCloseButton:Boolean = false) {
     if (showCloseButton)
@@ -78,6 +110,20 @@ fun ItemCardMovie(movie:Result, navController: NavController, showCloseButton:Bo
             .clickable { navController.navigate("details/${movie.id}") }
         ) {
 
+        val posterPath = movie.poster_path
+
+        //implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
+        GlideImage(
+            model = "https://image.tmdb.org/t/p/original$posterPath",
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            it.diskCacheStrategy(DiskCacheStrategy.ALL)
+        }
+
+
+
 //        Image(
 //            painter = painterResource(id = R.drawable.poster_exemplo),
 //            contentDescription = null,
@@ -85,15 +131,44 @@ fun ItemCardMovie(movie:Result, navController: NavController, showCloseButton:Bo
 //            modifier = Modifier.fillMaxSize(),
 //        )
 
-        val posterPath = movie.poster_path
-        AsyncImage(
-            model =
-                ImageRequest.Builder(context = LocalContext.current)
-                    .data("https://image.tmdb.org/t/p/original$posterPath")
-                    .crossfade(true).build(),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize(),
-        )
+//        val posterPath = movie.poster_path
+//        AsyncImage(
+//            model =
+//                ImageRequest.Builder(context = LocalContext.current)
+//                    .data("https://image.tmdb.org/t/p/original$posterPath")
+//                    .crossfade(true).build(),
+//            contentDescription = null,
+//            contentScale = ContentScale.Crop,
+//            modifier = Modifier.fillMaxSize(),
+//        )
+    }
+}
+
+@Composable
+fun BottomBar(moviesViewModel: MoviesViewModel, nextPage:()->Int){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp, start = 16.dp, end = 12.dp),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            onClick = {
+                moviesViewModel.getNextPageMovies(nextPage())
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = White
+            )
+        ) {
+            Text(
+                text = "Carregar",
+                fontSize = 20.sp,
+                color = Primary,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }

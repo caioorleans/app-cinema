@@ -33,7 +33,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -118,7 +117,13 @@ fun CinemaApp() {
                 NavHost(navController, startDestination = "home") {
                     composable("home") {
                         val moviesViewModel:MoviesViewModel = viewModel<MoviesViewModel>()
-                        HomeScreen(moviesUiState = moviesViewModel.moviesUiState, navController)
+
+                        HomeScreen(
+                            modifier = Modifier,
+                            moviesUiState = moviesViewModel.moviesUiState,
+                            navController,
+                            moviesViewModel
+                        )
                     }
                     composable("movies") {
                         //MoviesScreen()

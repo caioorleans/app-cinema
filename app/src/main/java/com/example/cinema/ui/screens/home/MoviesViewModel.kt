@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.annotation.RequiresExtension
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -14,6 +15,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.cinema.ui.data.TMDBApi
 import com.example.cinema.ui.data.model.MoviesResponse
+import com.example.cinema.ui.data.model.Result
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -28,7 +30,8 @@ sealed interface MoviesUiState {
 }
 
 class MoviesViewModel : ViewModel() {
-    /** The mutable State that stores the status of the most recent request */
+
+        /** The mutable State that stores the status of the most recent request */
     var moviesUiState: MoviesUiState by mutableStateOf(MoviesUiState.Loading)
         private set
 
@@ -49,4 +52,42 @@ class MoviesViewModel : ViewModel() {
             }
         }
     }
+
+    fun getNextPageMovies(nextPage:Int = 2) {
+        viewModelScope.launch {
+            moviesUiState = MoviesUiState.Loading
+            moviesUiState = try {
+                val result = TMDBApi.retrofitService.getPopularMovies(nextPage)
+                MoviesUiState.Success(result)
+
+            } catch (e: IOException) {
+                MoviesUiState.Error
+            } catch (e: HttpException) {
+                MoviesUiState.Error
+            }
+        }
+    }
+
 }
+
+/*
+*
+*
+* fun getNextPageMovies(nextPage:Int = 2) {
+        viewModelScope.launch {
+            moviesUiState = MoviesUiState.Loading
+            moviesUiState = try {
+                val result = TMDBApi.retrofitService.getPopularMovies(nextPage)
+                listAllMovies.add(MoviesUiState.Success(result).result.results)
+                MoviesUiState.Success(result)
+
+            } catch (e: IOException) {
+                MoviesUiState.Error
+            } catch (e: HttpException) {
+                MoviesUiState.Error
+            }
+        }
+    }
+*
+*
+* */
