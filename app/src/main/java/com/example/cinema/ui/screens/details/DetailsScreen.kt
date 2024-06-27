@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.cinema.ui.components.LoadingIndicator
 import com.example.cinema.ui.data.model.MovieDetails
 
 @Composable
@@ -36,8 +37,7 @@ fun DetailsScreen(movieUiState:MovieDetailsUiState, modifier: Modifier = Modifie
 
     when(movieUiState){
         is MovieDetailsUiState.Success -> DetailsBody(movieUiState.result)
-        is MovieDetailsUiState.Loading -> {
-            Text(text = "Carregando")}
+        is MovieDetailsUiState.Loading -> LoadingIndicator()
         is MovieDetailsUiState.Error -> {
             Text(text = "Ops, ocorreu um erro")
         }

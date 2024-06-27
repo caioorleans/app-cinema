@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.cinema.R
 import com.example.cinema.ui.components.LazyVerticalGridMovies
+import com.example.cinema.ui.components.LoadingIndicator
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -21,7 +22,7 @@ fun HomeScreen(moviesUiState: MoviesUiState, navController: NavController, modif
         when (moviesUiState) {
             is MoviesUiState.Success -> LazyVerticalGridMovies(moviesUiState.result.results, navController)
             is MoviesUiState.Error -> {}
-            is MoviesUiState.Loading -> {}
+            is MoviesUiState.Loading -> LoadingIndicator()
         }
     }
 }
