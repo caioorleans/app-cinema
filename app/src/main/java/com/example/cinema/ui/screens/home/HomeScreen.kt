@@ -8,17 +8,18 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.cinema.R
 import com.example.cinema.ui.components.LazyVerticalGridMovies
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun HomeScreen(moviesUiState: MoviesUiState, modifier:Modifier = Modifier) {
+fun HomeScreen(moviesUiState: MoviesUiState, navController: NavController, modifier:Modifier = Modifier) {
 
     Surface(modifier = modifier.fillMaxSize()) {
 
         when (moviesUiState) {
-            is MoviesUiState.Success -> LazyVerticalGridMovies(moviesUiState.result.results)
+            is MoviesUiState.Success -> LazyVerticalGridMovies(moviesUiState.result.results, navController)
             is MoviesUiState.Error -> {}
             is MoviesUiState.Loading -> {}
         }

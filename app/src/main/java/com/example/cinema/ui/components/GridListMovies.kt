@@ -2,6 +2,7 @@ package com.example.cinema.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,6 +27,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.cinema.R
@@ -35,7 +38,7 @@ import com.example.cinema.ui.theme.White
 
 
 @Composable
-fun LazyVerticalGridMovies(listMovies: List<Result> = listOf(),  showCloseButtonCards:Boolean = false){
+fun LazyVerticalGridMovies(listMovies: List<Result> = listOf(), navController: NavController,  showCloseButtonCards:Boolean = false){
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(128.dp),
@@ -47,14 +50,14 @@ fun LazyVerticalGridMovies(listMovies: List<Result> = listOf(),  showCloseButton
             .background(Secondary),
     ){
         items(listMovies){
-            ItemCardMovie(movie = it)
+            ItemCardMovie(movie = it, navController)
         }
     }
 }
 
 
 @Composable
-fun ItemCardMovie(movie:Result, showCloseButton:Boolean = false) {
+fun ItemCardMovie(movie:Result, navController: NavController, showCloseButton:Boolean = false) {
     if (showCloseButton)
         Row(
             Modifier
@@ -72,6 +75,7 @@ fun ItemCardMovie(movie:Result, showCloseButton:Boolean = false) {
         modifier = Modifier
             .height(300.dp)
             .clip(RoundedCornerShape(8.dp))
+            .clickable { navController.navigate("details/${movie.id}") }
         ) {
 
 //        Image(

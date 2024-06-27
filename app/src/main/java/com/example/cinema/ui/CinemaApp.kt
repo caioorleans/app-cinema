@@ -37,6 +37,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -44,6 +46,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cinema.ui.components.IconButtonCinema
 import com.example.cinema.ui.screens.details.DetailsScreen
+import com.example.cinema.ui.screens.details.DetailsViewModel
 import com.example.cinema.ui.screens.favorites.FavoritesScreen
 import com.example.cinema.ui.screens.home.HomeScreen
 import com.example.cinema.ui.screens.home.MoviesViewModel
@@ -59,7 +62,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CinemaApp() {
-    val rotas = listOf("Home", "Details")
+    val rotas = listOf("Home")
     var currentIndex by remember { mutableStateOf(0) }
     val navController = rememberNavController()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -115,7 +118,7 @@ fun CinemaApp() {
                 NavHost(navController, startDestination = "home") {
                     composable("home") {
                         val moviesViewModel:MoviesViewModel = viewModel<MoviesViewModel>()
-                        HomeScreen(moviesUiState = moviesViewModel.moviesUiState)
+                        HomeScreen(moviesUiState = moviesViewModel.moviesUiState, navController)
                     }
                     composable("movies") {
                         //MoviesScreen()
@@ -124,8 +127,18 @@ fun CinemaApp() {
                     composable("favorites") {
                         FavoritesScreen()
                     }
-                    composable("details"){
-                        DetailsScreen()
+                    composable("details/{movieId}"){ backstackEntry ->
+                        backstackEntry.arguments?.getString("movieId")
+                            ?.let { movieId ->
+                                val viewModel = viewModel<DetailsViewModel>(
+                                    factory = object :ViewModelProvider.Factory{
+                                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                                            return DetailsViewModel(movieId.toInt()) as T
+                                        }
+                                    }
+                                )
+                                DetailsScreen(viewModel.movieUiState)
+                            }
                     }
                 }
             }

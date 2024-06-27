@@ -1,13 +1,10 @@
 package com.example.cinema.ui.screens.details
 
-import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,10 +13,8 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,22 +23,39 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.cinema.R
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.example.cinema.ui.data.model.MovieDetails
 
 @Composable
-fun DetailsScreen(modifier: Modifier = Modifier){
+fun DetailsScreen(movieUiState:MovieDetailsUiState, modifier: Modifier = Modifier){
+
+    when(movieUiState){
+        is MovieDetailsUiState.Success -> DetailsBody(movieUiState.result)
+        is MovieDetailsUiState.Loading -> {
+            Text(text = "Carregando")}
+        is MovieDetailsUiState.Error -> {
+            Text(text = "Ops, ocorreu um erro")
+        }
+    }
+
+}
+
+@Composable
+private fun DetailsBody(movieDetails: MovieDetails, modifier: Modifier = Modifier){
+    val posterPath = movieDetails.poster_path
     Surface(
         modifier.fillMaxSize()
     ) {
         Box(modifier = modifier.fillMaxSize()){
-            Image(
-                painter = painterResource(id = R.drawable.poster_exemplo),
+            AsyncImage(
+                model = ImageRequest.Builder(context = LocalContext.current)
+                    .data("https://image.tmdb.org/t/p/original$posterPath")
+                    .crossfade(true).build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = modifier.fillMaxSize()
@@ -67,7 +79,7 @@ fun DetailsScreen(modifier: Modifier = Modifier){
                     .padding(horizontal = 40.dp)
             ) {
                 Text(
-                    text = "Kingdom of the planet of the apes",
+                    text = movieDetails.title,
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp,
@@ -78,28 +90,28 @@ fun DetailsScreen(modifier: Modifier = Modifier){
                 ) {
                     val rowModifier = Modifier.padding(end = 10.dp)
                     Text(
-                        text = "2024",
+                        text = movieDetails.release_date,
                         color = Color.LightGray,
                         modifier = rowModifier
                     )
                     Text(
-                        text = "2866",
+                        text = movieDetails.vote_average.toString(),
                         color = Color.Green,
                         modifier = rowModifier
                     )
                     Text(
-                        text = "145 min",
+                        text = "${movieDetails.runtime} min",
                         color = Color.LightGray
                     )
                 }
                 Text(
-                    text = "No one can stop the reign.",
+                    text = movieDetails.tagline,
                     color = Color.White,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "Many years after the reign of Caesar, a young ape goes on a journey that will lead him to question everything he's been taught about the past and make choices that will define a future for apes and humans alike.",
+                    text = movieDetails.overview,
                     color = Color.White,
                     modifier = modifier.padding(bottom = 16.dp)
                 )
@@ -142,15 +154,5 @@ fun DetailsScreen(modifier: Modifier = Modifier){
                 }
             }
         }
-    }
-}
-
-@Preview(
-    showBackground = true,
-)
-@Composable
-fun DetailsScreenPreview(){
-    Scaffold {
-        DetailsScreen(Modifier.padding(it))
     }
 }
