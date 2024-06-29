@@ -38,7 +38,8 @@ fun HomeScreen(
 
         when (moviesUiState) {
             is MoviesUiState.Success -> LazyVerticalGridMovies(
-                moviesUiState.result.results,
+                //moviesUiState.result.results,
+                moviesViewModel.listAllMovies,
                 navController,
                 false,
                 plusPage
