@@ -48,7 +48,7 @@ import com.example.cinema.ui.screens.details.DetailsScreen
 import com.example.cinema.ui.screens.details.DetailsViewModel
 import com.example.cinema.ui.screens.favorites.FavoritesScreen
 import com.example.cinema.ui.screens.home.HomeScreen
-import com.example.cinema.ui.screens.home.MoviesViewModel
+import com.example.cinema.ui.screens.home.MediaViewModel
 import com.example.cinema.ui.theme.DarkBlue
 import com.example.cinema.ui.theme.Primary
 import com.example.cinema.ui.theme.Red
@@ -116,13 +116,13 @@ fun CinemaApp() {
             {
                 NavHost(navController, startDestination = "home") {
                     composable("home") {
-                        val moviesViewModel:MoviesViewModel = viewModel<MoviesViewModel>()
+                        val mediaViewModel: MediaViewModel = viewModel<MediaViewModel>()
 
                         HomeScreen(
                             modifier = Modifier,
-                            moviesUiState = moviesViewModel.moviesUiState,
+                            moviesUiState = mediaViewModel.mediaUiState,
                             navController,
-                            moviesViewModel
+                            mediaViewModel
                         )
                     }
                     composable("movies") {

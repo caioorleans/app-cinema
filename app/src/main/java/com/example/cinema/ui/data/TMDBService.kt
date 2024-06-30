@@ -2,6 +2,7 @@ package com.example.cinema.ui.data
 
 import com.example.cinema.ui.data.model.MoviesResponse
 import com.example.cinema.ui.data.model.MovieDetails
+import com.example.cinema.ui.data.model.TvSeriesResponse
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Path
@@ -16,6 +17,13 @@ interface TMDBService {
     )
     @GET("movie/popular")
     suspend fun getPopularMovies(@Query("page") page:Int = 1):MoviesResponse
+
+    @Headers(
+        "Authorization:Bearer $API_KEY",
+        "Accept:application/json"
+    )
+    @GET("tv/popular")
+    suspend fun getPopularTvSeries(@Query("page") page:Int = 1):TvSeriesResponse
 
     @Headers(
         "Authorization:Bearer $API_KEY",

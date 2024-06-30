@@ -47,7 +47,7 @@ fun DetailsScreen(movieUiState:MovieDetailsUiState, modifier: Modifier = Modifie
 
 @Composable
 private fun DetailsBody(movieDetails: MovieDetails, modifier: Modifier = Modifier){
-    val posterPath = movieDetails.poster_path
+    val posterPath = movieDetails.posterPath
     Surface(
         modifier.fillMaxSize()
     ) {
@@ -90,12 +90,12 @@ private fun DetailsBody(movieDetails: MovieDetails, modifier: Modifier = Modifie
                 ) {
                     val rowModifier = Modifier.padding(end = 10.dp)
                     Text(
-                        text = movieDetails.release_date,
+                        text = movieDetails.releaseDate,
                         color = Color.LightGray,
                         modifier = rowModifier
                     )
                     Text(
-                        text = movieDetails.vote_average.toString(),
+                        text = movieDetails.voteAverage.toString(),
                         color = Color.Green,
                         modifier = rowModifier
                     )

@@ -48,9 +48,9 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.cinema.R
-import com.example.cinema.ui.data.model.Result
-import com.example.cinema.ui.screens.home.MoviesUiState
-import com.example.cinema.ui.screens.home.MoviesViewModel
+import com.example.cinema.ui.data.model.MediaResult
+import com.example.cinema.ui.screens.home.MediaUiState
+import com.example.cinema.ui.screens.home.MediaViewModel
 import com.example.cinema.ui.theme.Primary
 import com.example.cinema.ui.theme.Secondary
 import com.example.cinema.ui.theme.White
@@ -58,12 +58,12 @@ import com.example.cinema.ui.theme.White
 
 @Composable
 fun LazyVerticalGridMovies(
-    listMovies: List<Result> = listOf(),
+    listAllMedia: List<MediaResult> = listOf(),
     navController: NavController,
     showCloseButtonCards:Boolean = false,
     nextPage:()->Int
     ){
-    val moviesViewModel:MoviesViewModel = viewModel<MoviesViewModel>()
+    val mediaViewModel:MediaViewModel = viewModel<MediaViewModel>()
 
 
     LazyVerticalGrid(
@@ -75,12 +75,12 @@ fun LazyVerticalGridMovies(
             .fillMaxSize()
             .background(Secondary),
     ){
-        items(listMovies){
-            ItemCardMovie(movie = it, navController, showCloseButtonCards)
+        items(listAllMedia){
+            ItemCardMovie(media = it, navController, showCloseButtonCards)
         }
 
         item(span = { GridItemSpan(maxLineSpan) }) {
-            BottomBar(moviesViewModel, nextPage)
+            BottomBar(mediaViewModel, nextPage)
         }
 
     }
@@ -89,7 +89,7 @@ fun LazyVerticalGridMovies(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun ItemCardMovie(movie:Result, navController: NavController, showCloseButton:Boolean = false) {
+fun ItemCardMovie(media:MediaResult, navController: NavController, showCloseButton:Boolean = false) {
     if (showCloseButton)
         Row(
             Modifier
@@ -107,10 +107,10 @@ fun ItemCardMovie(movie:Result, navController: NavController, showCloseButton:Bo
         modifier = Modifier
             .height(300.dp)
             .clip(RoundedCornerShape(8.dp))
-            .clickable { navController.navigate("details/${movie.id}") }
+            .clickable { navController.navigate("details/${media.id}") }
         ) {
 
-        val posterPath = movie.poster_path
+        val posterPath = media.posterPath
 
         //implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
         GlideImage(
@@ -123,29 +123,11 @@ fun ItemCardMovie(movie:Result, navController: NavController, showCloseButton:Bo
         }
 
 
-
-//        Image(
-//            painter = painterResource(id = R.drawable.poster_exemplo),
-//            contentDescription = null,
-//            contentScale = ContentScale.Crop,
-//            modifier = Modifier.fillMaxSize(),
-//        )
-
-//        val posterPath = movie.poster_path
-//        AsyncImage(
-//            model =
-//                ImageRequest.Builder(context = LocalContext.current)
-//                    .data("https://image.tmdb.org/t/p/original$posterPath")
-//                    .crossfade(true).build(),
-//            contentDescription = null,
-//            contentScale = ContentScale.Crop,
-//            modifier = Modifier.fillMaxSize(),
-//        )
     }
 }
 
 @Composable
-fun BottomBar(moviesViewModel: MoviesViewModel, nextPage:()->Int){
+fun BottomBar(moviesViewModel: MediaViewModel, nextPage:()->Int){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -157,7 +139,7 @@ fun BottomBar(moviesViewModel: MoviesViewModel, nextPage:()->Int){
                 .fillMaxWidth()
                 .height(50.dp),
             onClick = {
-                moviesViewModel.getNextPageMovies(nextPage())
+                moviesViewModel.getNextPageMedia(nextPage())
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = White
