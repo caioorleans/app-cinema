@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cinema.R
-import com.example.cinema.ui.components.LazyVerticalGridMovies
+import com.example.cinema.ui.components.LazyVerticalGridMedia
 import com.example.cinema.ui.theme.Secondary
 import com.example.cinema.ui.theme.White
 
@@ -41,7 +41,7 @@ fun FavoritesScreen(modifier: Modifier = Modifier) {
                 Text(text = "Minha Lista", fontSize = 30.sp, color = White)
             }
 
-            //LazyVerticalGridMovies(listMovies, true)
+            //LazyVerticalGridMedia(listMovies, true)
 
 
         }

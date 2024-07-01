@@ -44,11 +44,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cinema.ui.components.IconButtonCinema
+import com.example.cinema.ui.screens.TvSeries.TvSeriesScreen
+import com.example.cinema.ui.screens.TvSeries.TvSeriesViewModel
 import com.example.cinema.ui.screens.details.DetailsScreen
 import com.example.cinema.ui.screens.details.DetailsViewModel
 import com.example.cinema.ui.screens.favorites.FavoritesScreen
 import com.example.cinema.ui.screens.home.HomeScreen
 import com.example.cinema.ui.screens.home.MediaViewModel
+import com.example.cinema.ui.screens.movies.MoviesScreen
+import com.example.cinema.ui.screens.movies.MoviesViewModel
 import com.example.cinema.ui.theme.DarkBlue
 import com.example.cinema.ui.theme.Primary
 import com.example.cinema.ui.theme.Red
@@ -61,7 +65,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CinemaApp() {
-    val rotas = listOf("Home")
+    val rotas = listOf("Home", "Movies", "TvSeries")
     var currentIndex by remember { mutableStateOf(0) }
     val navController = rememberNavController()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -126,9 +130,28 @@ fun CinemaApp() {
                         )
                     }
                     composable("movies") {
-                        //MoviesScreen()
+                        val moviesViewModel: MoviesViewModel = viewModel<MoviesViewModel>()
+
+                        MoviesScreen(
+                            modifier = Modifier,
+                            moviesUiState = moviesViewModel.moviesUiState,
+                            navController,
+                            moviesViewModel
+                        )
 
                     }
+
+                    composable("tvseries") {
+                        val tvSeriesViewModel: TvSeriesViewModel = viewModel<TvSeriesViewModel>()
+
+                        TvSeriesScreen(
+                            modifier = Modifier,
+                            tvSeriesUiState = tvSeriesViewModel.tvSeriesUiState,
+                            navController,
+                            tvSeriesViewModel
+                        )
+                    }
+
                     composable("favorites") {
                         FavoritesScreen()
                     }

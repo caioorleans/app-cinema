@@ -1,4 +1,4 @@
-package com.example.cinema.ui.screens.home
+package com.example.cinema.ui.screens.TvSeries
 
 
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,30 +14,30 @@ import com.example.cinema.ui.components.LazyVerticalGridMedia
 import com.example.cinema.ui.components.LoadingIndicator
 
 @Composable
-fun HomeScreen(
+fun TvSeriesScreen(
     modifier:Modifier = Modifier,
-    moviesUiState: MediaUiState,
+    tvSeriesUiState: TvSeriesUiState,
     navController: NavController,
-    mediaViewModel: MediaViewModel
+    tvSeriesViewModel: TvSeriesViewModel
     ) {
 
     var nextPage: Int by remember { mutableIntStateOf(2) }
     val plusPage:()->Int = {
-        mediaViewModel.getNextPageMedia(nextPage)
+        tvSeriesViewModel.getNextPageTvSeries(nextPage)
         nextPage++
     }
 
     Surface(modifier = modifier.fillMaxSize()) {
 
-        when (moviesUiState) {
-            is MediaUiState.Success -> LazyVerticalGridMedia(
-                mediaViewModel.listAllMedia,
+        when (tvSeriesUiState) {
+            is TvSeriesUiState.Success -> LazyVerticalGridMedia(
+                tvSeriesViewModel.listAllTvSeries,
                 navController,
                 false,
                 plusPage
             )
-            is MediaUiState.Error -> {}
-            is MediaUiState.Loading -> LoadingIndicator()
+            is TvSeriesUiState.Error -> {}
+            is TvSeriesUiState.Loading -> LoadingIndicator()
         }
 
     }
