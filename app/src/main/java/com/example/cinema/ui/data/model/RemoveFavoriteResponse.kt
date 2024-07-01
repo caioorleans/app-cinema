@@ -1,8 +1,10 @@
 package com.example.cinema.ui.data.model
 
-interface MediaResponse {
-    val page: Int
-    val results: List<MediaResult>
-    val totalPages: Int
-    val totalResults: Int
-}
+import com.google.gson.annotations.SerializedName
+
+data class RemoveFavoriteResponse(
+    @SerializedName("status_code")
+    val statusCode: Int,
+    @SerializedName("status_message")
+    val statusMessage: Int
+)

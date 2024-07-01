@@ -1,49 +1,43 @@
 package com.example.cinema.ui.screens.favorites
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.cinema.R
 import com.example.cinema.ui.components.LazyVerticalGridMedia
-import com.example.cinema.ui.theme.Secondary
-import com.example.cinema.ui.theme.White
+import com.example.cinema.ui.components.LoadingIndicator
 
 @Composable
-fun FavoritesScreen(modifier: Modifier = Modifier) {
-    val listMovies = listOf(
-        R.drawable.ic_launcher_background,
-    )
-    Surface(modifier = modifier
-        .fillMaxSize()
-        .padding(horizontal = 8.dp)
-        .padding(top = 16.dp)) {
+fun FavoritesScreen(
+    modifier:Modifier = Modifier,
+    favoriteUiState: FavoriteUiState,
+    navController: NavController,
+    favoriteViewModel: FavoriteViewModel
+) {
 
-        Column {
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .background(Secondary)
-                .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.Center
-                ) {
-                Text(text = "Minha Lista", fontSize = 30.sp, color = White)
-            }
+    var nextPage: Int by remember { mutableIntStateOf(2) }
+    val plusPage:()->Int = {
+        favoriteViewModel.getNextPageFavorite(nextPage)
+        nextPage++
+    }
 
-            //LazyVerticalGridMedia(listMovies, true)
+    Surface(modifier = modifier.fillMaxSize()) {
 
-
+        when (favoriteUiState) {
+            is FavoriteUiState.Success -> LazyVerticalGridMedia(
+                favoriteViewModel.listAllFavorite,
+                navController,
+                true,
+                plusPage
+            )
+            is FavoriteUiState.Error -> {}
+            is FavoriteUiState.Loading -> LoadingIndicator()
         }
 
     }

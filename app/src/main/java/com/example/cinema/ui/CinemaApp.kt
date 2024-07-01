@@ -48,6 +48,7 @@ import com.example.cinema.ui.screens.TvSeries.TvSeriesScreen
 import com.example.cinema.ui.screens.TvSeries.TvSeriesViewModel
 import com.example.cinema.ui.screens.details.DetailsScreen
 import com.example.cinema.ui.screens.details.DetailsViewModel
+import com.example.cinema.ui.screens.favorites.FavoriteViewModel
 import com.example.cinema.ui.screens.favorites.FavoritesScreen
 import com.example.cinema.ui.screens.home.HomeScreen
 import com.example.cinema.ui.screens.home.MediaViewModel
@@ -153,7 +154,14 @@ fun CinemaApp() {
                     }
 
                     composable("favorites") {
-                        FavoritesScreen()
+                        val favoriteViewModel: FavoriteViewModel = viewModel<FavoriteViewModel>()
+
+                        FavoritesScreen(
+                            modifier = Modifier,
+                            favoriteUiState = favoriteViewModel.favoriteUiState,
+                            navController,
+                            favoriteViewModel
+                        )
                     }
                     composable("details/{movieId}"){ backstackEntry ->
                         backstackEntry.arguments?.getString("movieId")
