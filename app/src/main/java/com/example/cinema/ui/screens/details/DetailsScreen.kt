@@ -15,9 +15,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -27,10 +31,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.cinema.ui.components.LoadingIndicator
+import com.example.cinema.ui.data.model.MediaType
 import com.example.cinema.ui.data.model.MovieDetails
+import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 
 @Composable
 fun DetailsScreen(movieUiState:MovieDetailsUiState, modifier: Modifier = Modifier){
@@ -39,7 +47,11 @@ fun DetailsScreen(movieUiState:MovieDetailsUiState, modifier: Modifier = Modifie
         is MovieDetailsUiState.Success -> DetailsBody(movieUiState.result)
         is MovieDetailsUiState.Loading -> LoadingIndicator()
         is MovieDetailsUiState.Error -> {
-            Text(text = "Ops, ocorreu um erro")
+            Text(
+                text = "Ops, ocorreu um erro",
+                color = Color.White,
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 
@@ -47,7 +59,11 @@ fun DetailsScreen(movieUiState:MovieDetailsUiState, modifier: Modifier = Modifie
 
 @Composable
 private fun DetailsBody(movieDetails: MovieDetails, modifier: Modifier = Modifier){
+    val scope = rememberCoroutineScope()
+    val favoriteViewModel = viewModel<AddFavoriteViewModel>()
     val posterPath = movieDetails.posterPath
+    val snackbarHostState = remember { SnackbarHostState() }
+
     Surface(
         modifier.fillMaxSize()
     ) {
@@ -136,7 +152,18 @@ private fun DetailsBody(movieDetails: MovieDetails, modifier: Modifier = Modifie
                         Text(text = "Trailer")
                     }
                     OutlinedButton(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            scope.launch {
+                                favoriteViewModel.addToFavorite(movieDetails.id, MediaType.MOVIE)
+                                when(favoriteViewModel.uiState){
+                                    AddFavoriteUiState.Sucess -> snackbarHostState.showSnackbar(
+                                        "Added to favorite!")
+                                    AddFavoriteUiState.Error -> snackbarHostState.showSnackbar(
+                                        "An error ocurred!")
+                                }
+                            }
+
+                        },
                         shape = shape,
                         border = BorderStroke(1.dp, Color.White)
                     ) {
@@ -154,5 +181,8 @@ private fun DetailsBody(movieDetails: MovieDetails, modifier: Modifier = Modifie
                 }
             }
         }
+        SnackbarHost(
+            hostState = snackbarHostState
+        )
     }
 }
