@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cinema.ui.data.TMDBApi
-import com.example.cinema.ui.data.model.AddFavoriteBody
+import com.example.cinema.ui.data.model.ActionFavoriteBody
 import com.example.cinema.ui.data.model.MediaType
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -24,7 +24,7 @@ class AddFavoriteViewModel: ViewModel() {
     suspend fun addToFavorite(mediaId:Int, mediaType: MediaType){
         viewModelScope.launch {
             uiState = try {
-                val body = AddFavoriteBody(
+                val body = ActionFavoriteBody(
                     true,
                     mediaId,
                     if (mediaType == MediaType.MOVIE) "movie" else "serie"

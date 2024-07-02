@@ -22,6 +22,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -35,11 +36,17 @@ import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.example.cinema.ui.data.model.MediaResponse
 import com.example.cinema.ui.data.model.MediaResult
+import com.example.cinema.ui.data.model.MediaType
+import com.example.cinema.ui.screens.details.AddFavoriteUiState
+import com.example.cinema.ui.screens.details.AddFavoriteViewModel
+import com.example.cinema.ui.screens.favorites.FavoriteViewModel
 import com.example.cinema.ui.screens.home.MediaViewModel
 import com.example.cinema.ui.theme.Primary
 import com.example.cinema.ui.theme.Secondary
 import com.example.cinema.ui.theme.White
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -62,7 +69,7 @@ fun LazyVerticalGridMedia(
             .background(Secondary),
     ){
         items(listAllMedia){
-            ItemCardMovie(media = it, navController, showCloseButtonCards)
+            ItemCardMovie(media = it, navController, showCloseButtonCards, it)
         }
 
         item(span = { GridItemSpan(maxLineSpan) }) {
@@ -75,7 +82,10 @@ fun LazyVerticalGridMedia(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun ItemCardMovie(media:MediaResult, navController: NavController, showCloseButton:Boolean = false) {
+fun ItemCardMovie(media:MediaResult, navController: NavController, showCloseButton:Boolean = false, mediaResult: MediaResult) {
+    val scope = rememberCoroutineScope()
+    val favoriteViewModel = viewModel<FavoriteViewModel>()
+
     if (showCloseButton)
         Row(
             Modifier
@@ -86,7 +96,12 @@ fun ItemCardMovie(media:MediaResult, navController: NavController, showCloseButt
             horizontalArrangement = Arrangement.End,
 
         ){
-            IconButtonCinema(Icons.Filled.Info, "Menu", White){}
+            IconButtonCinema(Icons.Filled.Info, "Menu", White){
+                scope.launch {
+                    favoriteViewModel.removeFavorite(mediaResult.id, MediaType.MOVIE)
+                    navController.navigate("favorites")
+                }
+            }
         }
 
     Box(

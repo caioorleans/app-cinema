@@ -7,13 +7,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cinema.ui.data.TMDBApi
-import com.example.cinema.ui.data.model.AddFavoriteBody
+import com.example.cinema.ui.data.model.ActionFavoriteBody
 import com.example.cinema.ui.data.model.MediaResponse
 import com.example.cinema.ui.data.model.MediaResult
 import com.example.cinema.ui.data.model.MediaType
-import com.example.cinema.ui.data.model.RemoveFavoriteBody
-import com.example.cinema.ui.data.model.RemoveFavoriteResponse
-import com.example.cinema.ui.screens.details.AddFavoriteUiState
+import com.example.cinema.ui.data.model.ActionFavoriteResponse
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -28,7 +26,7 @@ sealed interface FavoriteUiState {
 }
 
 sealed interface RemoveFavoriteUiState {
-    data class Success(val result: RemoveFavoriteResponse) : RemoveFavoriteUiState
+    data class Success(val result: ActionFavoriteResponse) : RemoveFavoriteUiState
     object Error : RemoveFavoriteUiState
     object Loading : RemoveFavoriteUiState
 }
@@ -84,14 +82,14 @@ class FavoriteViewModel : ViewModel() {
         }
     }
 
-    suspend fun removeFavorite(mediaId:Int, mediaType: String){
+    suspend fun removeFavorite(mediaId:Int, mediaType: MediaType){
         favoriteRemoveUiState = RemoveFavoriteUiState.Loading
         viewModelScope.launch {
             favoriteRemoveUiState = try {
-                val body = RemoveFavoriteBody(
-                    mediaType,
+                val body = ActionFavoriteBody(
+                    false,
                     mediaId,
-                   true
+                    if (mediaType == MediaType.MOVIE) "movie" else "serie"
                 )
                 val resultRemoveFavorite = TMDBApi.retrofitService.removeFavorite( body )
                 RemoveFavoriteUiState.Success(resultRemoveFavorite)
