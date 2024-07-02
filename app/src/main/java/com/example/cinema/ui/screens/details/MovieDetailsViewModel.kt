@@ -38,6 +38,7 @@ class MovieDetailsViewModel(
                 val result =
                     if(mediaType == MediaType.MOVIE) TMDBApi.retrofitService.getMovieDetails(movieId)
                     else TMDBApi.retrofitService.getTvShowDetails(movieId)
+                result.mediaType = mediaType
                 MovieDetailsUiState.Success(result)
             }catch (e: IOException) {
                 e.message?.let { Log.e("", it) }

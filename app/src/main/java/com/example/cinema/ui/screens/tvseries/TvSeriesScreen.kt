@@ -23,7 +23,7 @@ fun TvSeriesScreen(
 
     var nextPage: Int by remember { mutableIntStateOf(2) }
     val plusPage:()->Int = {
-        tvSeriesViewModel.getNextPageTvSeries(nextPage)
+        tvSeriesViewModel.getTvSeries(nextPage)
         nextPage++
     }
 

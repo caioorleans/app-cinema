@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cinema.ui.data.TMDBApi
+import com.example.cinema.ui.data.model.MediaType
 import com.example.cinema.ui.data.model.MoviesResponse
 import com.example.cinema.ui.data.model.MoviesResult
 import kotlinx.coroutines.launch
@@ -34,11 +35,12 @@ class MoviesViewModel : ViewModel() {
         getMovies()
     }
 
-    private fun getMovies() {
+    fun getMovies(page:Int = 1) {
         viewModelScope.launch {
             moviesUiState = MoviesUiState.Loading
             moviesUiState = try {
-                val resultMovies = TMDBApi.retrofitService.getPopularMovies()
+                val resultMovies = TMDBApi.retrofitService.getPopularMovies(page)
+                resultMovies.results.forEach { it.mediaType = MediaType.MOVIE }
                 listAllMovies = listAllMovies.plus(resultMovies.results)
 
                 MoviesUiState.Success(resultMovies)
@@ -49,21 +51,4 @@ class MoviesViewModel : ViewModel() {
             }
         }
     }
-
-    fun getNextPageMovies(nextPage:Int = 2) {
-        viewModelScope.launch {
-            moviesUiState = MoviesUiState.Loading
-            moviesUiState = try {
-                val resultMovies = TMDBApi.retrofitService.getPopularMovies(nextPage)
-
-                listAllMovies = listAllMovies.plus(resultMovies.results)
-                MoviesUiState.Success(resultMovies)
-            } catch (e: IOException) {
-                MoviesUiState.Error
-            } catch (e: HttpException) {
-                MoviesUiState.Error
-            }
-        }
-    }
-
 }

@@ -34,11 +34,11 @@ class TvSeriesViewModel : ViewModel() {
         getTvSeries()
     }
 
-    private fun getTvSeries() {
+    fun getTvSeries(page:Int = 1) {
         viewModelScope.launch {
             tvSeriesUiState = TvSeriesUiState.Loading
             tvSeriesUiState = try {
-                val resultTvSeries = TMDBApi.retrofitService.getPopularTvSeries()
+                val resultTvSeries = TMDBApi.retrofitService.getPopularTvSeries(page)
                 listAllTvSeries = listAllTvSeries.plus(resultTvSeries.results)
 
                 TvSeriesUiState.Success(resultTvSeries)
@@ -49,21 +49,4 @@ class TvSeriesViewModel : ViewModel() {
             }
         }
     }
-
-    fun getNextPageTvSeries(nextPage:Int = 2) {
-        viewModelScope.launch {
-            tvSeriesUiState = TvSeriesUiState.Loading
-            tvSeriesUiState = try {
-                val resultTvSeries = TMDBApi.retrofitService.getPopularTvSeries(nextPage)
-
-                listAllTvSeries = listAllTvSeries.plus(resultTvSeries.results)
-                TvSeriesUiState.Success(resultTvSeries)
-            } catch (e: IOException) {
-                TvSeriesUiState.Error
-            } catch (e: HttpException) {
-                TvSeriesUiState.Error
-            }
-        }
-    }
-
 }

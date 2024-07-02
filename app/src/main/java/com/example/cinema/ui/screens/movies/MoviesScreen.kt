@@ -23,7 +23,7 @@ fun MoviesScreen(
 
     var nextPage: Int by remember { mutableIntStateOf(2) }
     val plusPage:()->Int = {
-        moviesViewModel.getNextPageMovies(nextPage)
+        moviesViewModel.getMovies(nextPage)
         nextPage++
     }
 

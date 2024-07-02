@@ -46,11 +46,10 @@ import okhttp3.internal.wait
 @Composable
 fun DetailsScreen(
     movieUiState:MovieDetailsUiState,
-    mediaType: MediaType,
     modifier: Modifier = Modifier){
 
     when(movieUiState){
-        is MovieDetailsUiState.Success -> DetailsBody(movieUiState.result, mediaType)
+        is MovieDetailsUiState.Success -> DetailsBody(movieUiState.result)
         is MovieDetailsUiState.Loading -> LoadingIndicator()
         is MovieDetailsUiState.Error -> {
             Text(
@@ -66,12 +65,11 @@ fun DetailsScreen(
 @Composable
 private fun DetailsBody(
     mediaResult: MediaResult,
-    mediaType: MediaType,
     modifier: Modifier = Modifier){
     val scope = rememberCoroutineScope()
     val favoriteViewModel = viewModel<AddFavoriteViewModel>()
-    val posterPath = mediaResult.posterPath
     val snackbarHostState = remember { SnackbarHostState() }
+    val mediaType = mediaResult.mediaType
 
     Surface(
         modifier.fillMaxSize()
@@ -79,7 +77,7 @@ private fun DetailsBody(
         Box(modifier = modifier.fillMaxSize()){
             AsyncImage(
                 model = ImageRequest.Builder(context = LocalContext.current)
-                    .data("https://image.tmdb.org/t/p/original$posterPath")
+                    .data("https://image.tmdb.org/t/p/original${mediaResult.posterPath}")
                     .crossfade(true).build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
@@ -103,7 +101,6 @@ private fun DetailsBody(
                     .align(Alignment.CenterStart)
                     .padding(horizontal = 40.dp)
             ) {
-                println(mediaResult)
                 Text(
                     text =
                         if(mediaType == MediaType.MOVIE)
