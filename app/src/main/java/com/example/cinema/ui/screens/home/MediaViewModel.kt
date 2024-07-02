@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.cinema.ui.data.TMDBApi
 import com.example.cinema.ui.data.model.MediaResponse
 import com.example.cinema.ui.data.model.MediaResult
+import com.example.cinema.ui.data.model.MediaType
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -38,8 +39,15 @@ class MediaViewModel : ViewModel() {
         viewModelScope.launch {
             mediaUiState = MediaUiState.Loading
             mediaUiState = try {
-                val resultMovies = TMDBApi.retrofitService.getPopularMovies()
                 val resultTvSeries = TMDBApi.retrofitService.getPopularTvSeries()
+                resultTvSeries.results.forEach{
+                    it.mediaType = MediaType.SERIE
+                }
+                val resultMovies = TMDBApi.retrofitService.getPopularMovies()
+                resultMovies.results.forEach {
+                    it.mediaType = MediaType.MOVIE
+                }
+
                 listAllMedia = listAllMedia.plus(resultMovies.results)
                 listAllMedia = listAllMedia.plus(resultTvSeries.results)
 
@@ -57,7 +65,13 @@ class MediaViewModel : ViewModel() {
             mediaUiState = MediaUiState.Loading
             mediaUiState = try {
                 val resultMovies = TMDBApi.retrofitService.getPopularMovies(nextPage)
+                resultMovies.results.forEach {
+                    it.mediaType = MediaType.MOVIE
+                }
                 val resultTvSeries = TMDBApi.retrofitService.getPopularTvSeries(nextPage)
+                resultTvSeries.results.forEach{
+                    it.mediaType = MediaType.SERIE
+                }
 
                 listAllMedia = listAllMedia.plus(resultMovies.results)
                 listAllMedia = listAllMedia.plus(resultTvSeries.results)

@@ -44,10 +44,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cinema.ui.components.IconButtonCinema
+import com.example.cinema.ui.data.model.MediaType
 import com.example.cinema.ui.screens.TvSeries.TvSeriesScreen
 import com.example.cinema.ui.screens.TvSeries.TvSeriesViewModel
 import com.example.cinema.ui.screens.details.DetailsScreen
-import com.example.cinema.ui.screens.details.DetailsViewModel
+import com.example.cinema.ui.screens.details.MovieDetailsViewModel
 import com.example.cinema.ui.screens.favorites.FavoriteViewModel
 import com.example.cinema.ui.screens.favorites.FavoritesScreen
 import com.example.cinema.ui.screens.home.HomeScreen
@@ -163,17 +164,30 @@ fun CinemaApp() {
                             favoriteViewModel
                         )
                     }
-                    composable("details/{movieId}"){ backstackEntry ->
+                    composable("details/movies/{movieId}"){ backstackEntry ->
                         backstackEntry.arguments?.getString("movieId")
                             ?.let { movieId ->
-                                val viewModel = viewModel<DetailsViewModel>(
+                                val viewModel = viewModel<MovieDetailsViewModel>(
                                     factory = object :ViewModelProvider.Factory{
                                         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                                            return DetailsViewModel(movieId.toInt()) as T
+                                            return MovieDetailsViewModel(movieId.toInt(), MediaType.MOVIE) as T
                                         }
                                     }
                                 )
-                                DetailsScreen(viewModel.movieUiState)
+                                DetailsScreen(viewModel.movieUiState, MediaType.MOVIE)
+                            }
+                    }
+                    composable("details/tvShow/{showId}"){ backstackEntry ->
+                        backstackEntry.arguments?.getString("showId")
+                            ?.let { movieId ->
+                                val viewModel = viewModel<MovieDetailsViewModel>(
+                                    factory = object :ViewModelProvider.Factory{
+                                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                                            return MovieDetailsViewModel(movieId.toInt(), MediaType.SERIE) as T
+                                        }
+                                    }
+                                )
+                                DetailsScreen(viewModel.movieUiState, MediaType.SERIE)
                             }
                     }
                 }

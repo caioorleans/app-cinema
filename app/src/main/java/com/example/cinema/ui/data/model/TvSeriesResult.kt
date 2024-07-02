@@ -26,4 +26,8 @@ data class TvSeriesResult(
     val originCountry: List<String>,
     @SerializedName("original_name")
     val originalName: String,
-):MediaResult
+    override var mediaType: MediaType,
+    val number_of_seasons: Int,
+    override val tagline: String,
+
+    ):MediaResult

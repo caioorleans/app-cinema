@@ -10,4 +10,6 @@ interface MediaResult {
     val posterPath: String
     val voteAverage: Double
     val voteCount: Int
+    var mediaType:MediaType
+    val tagline:String
 }

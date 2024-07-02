@@ -35,16 +35,22 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.cinema.ui.components.LoadingIndicator
+import com.example.cinema.ui.data.model.MediaResult
 import com.example.cinema.ui.data.model.MediaType
 import com.example.cinema.ui.data.model.MovieDetails
+import com.example.cinema.ui.data.model.MoviesResult
+import com.example.cinema.ui.data.model.TvSeriesResult
 import kotlinx.coroutines.launch
 import okhttp3.internal.wait
 
 @Composable
-fun DetailsScreen(movieUiState:MovieDetailsUiState, modifier: Modifier = Modifier){
+fun DetailsScreen(
+    movieUiState:MovieDetailsUiState,
+    mediaType: MediaType,
+    modifier: Modifier = Modifier){
 
     when(movieUiState){
-        is MovieDetailsUiState.Success -> DetailsBody(movieUiState.result)
+        is MovieDetailsUiState.Success -> DetailsBody(movieUiState.result, mediaType)
         is MovieDetailsUiState.Loading -> LoadingIndicator()
         is MovieDetailsUiState.Error -> {
             Text(
@@ -58,10 +64,13 @@ fun DetailsScreen(movieUiState:MovieDetailsUiState, modifier: Modifier = Modifie
 }
 
 @Composable
-private fun DetailsBody(movieDetails: MovieDetails, modifier: Modifier = Modifier){
+private fun DetailsBody(
+    mediaResult: MediaResult,
+    mediaType: MediaType,
+    modifier: Modifier = Modifier){
     val scope = rememberCoroutineScope()
     val favoriteViewModel = viewModel<AddFavoriteViewModel>()
-    val posterPath = movieDetails.posterPath
+    val posterPath = mediaResult.posterPath
     val snackbarHostState = remember { SnackbarHostState() }
 
     Surface(
@@ -94,8 +103,13 @@ private fun DetailsBody(movieDetails: MovieDetails, modifier: Modifier = Modifie
                     .align(Alignment.CenterStart)
                     .padding(horizontal = 40.dp)
             ) {
+                println(mediaResult)
                 Text(
-                    text = movieDetails.title,
+                    text =
+                        if(mediaType == MediaType.MOVIE)
+                            (mediaResult as MoviesResult).title
+                        else
+                            (mediaResult as TvSeriesResult).name,
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp,
@@ -106,28 +120,35 @@ private fun DetailsBody(movieDetails: MovieDetails, modifier: Modifier = Modifie
                 ) {
                     val rowModifier = Modifier.padding(end = 10.dp)
                     Text(
-                        text = movieDetails.releaseDate,
+                        text = if(mediaType == MediaType.MOVIE)
+                            (mediaResult as MoviesResult).releaseDate
+                        else
+                            (mediaResult as TvSeriesResult).firstAirDate,
                         color = Color.LightGray,
                         modifier = rowModifier
                     )
                     Text(
-                        text = movieDetails.voteAverage.toString(),
+                        text = mediaResult.voteAverage.toString(),
                         color = Color.Green,
                         modifier = rowModifier
                     )
                     Text(
-                        text = "${movieDetails.runtime} min",
+                        text =
+                            if(mediaType == MediaType.MOVIE)
+                                "${(mediaResult as MoviesResult).runtime} min"
+                            else
+                                "${(mediaResult as TvSeriesResult).number_of_seasons} seasons",
                         color = Color.LightGray
                     )
                 }
                 Text(
-                    text = movieDetails.tagline,
+                    text = mediaResult.tagline,
                     color = Color.White,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = movieDetails.overview,
+                    text = mediaResult.overview,
                     color = Color.White,
                     modifier = modifier.padding(bottom = 16.dp)
                 )
@@ -154,7 +175,7 @@ private fun DetailsBody(movieDetails: MovieDetails, modifier: Modifier = Modifie
                     OutlinedButton(
                         onClick = {
                             scope.launch {
-                                favoriteViewModel.addToFavorite(movieDetails.id, MediaType.MOVIE)
+                                favoriteViewModel.addToFavorite(mediaResult.id, mediaType)
                                 when(favoriteViewModel.uiState){
                                     AddFavoriteUiState.Sucess -> snackbarHostState.showSnackbar(
                                         "Added to favorite!")

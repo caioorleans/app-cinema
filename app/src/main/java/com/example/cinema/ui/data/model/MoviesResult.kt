@@ -25,5 +25,8 @@ data class MoviesResult(
     val releaseDate: String,
     val title: String,
     val video: Boolean,
-    val adult: Boolean
+    val adult: Boolean,
+    override var mediaType: MediaType,
+    var runtime:String,
+    override val tagline: String,
 ):MediaResult

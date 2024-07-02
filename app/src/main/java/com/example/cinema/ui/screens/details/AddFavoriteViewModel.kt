@@ -27,7 +27,7 @@ class AddFavoriteViewModel: ViewModel() {
                 val body = ActionFavoriteBody(
                     true,
                     mediaId,
-                    if (mediaType == MediaType.MOVIE) "movie" else "serie"
+                    if (mediaType == MediaType.MOVIE) "movie" else "tv"
                 )
                 TMDBApi.retrofitService.addFavorite(
                     body

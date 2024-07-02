@@ -2,9 +2,10 @@ package com.example.cinema.ui.data
 
 import com.example.cinema.ui.data.model.ActionFavoriteBody
 import com.example.cinema.ui.data.model.MoviesResponse
-import com.example.cinema.ui.data.model.MovieDetails
+import com.example.cinema.ui.data.model.MoviesResult
 import com.example.cinema.ui.data.model.ActionFavoriteResponse
 import com.example.cinema.ui.data.model.TvSeriesResponse
+import com.example.cinema.ui.data.model.TvSeriesResult
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -34,7 +35,14 @@ interface TMDBService {
         "Accept:application/json"
     )
     @GET("movie/{movieId}")
-    suspend fun getMovieDetails(@Path("movieId") movieId:Int): MovieDetails
+    suspend fun getMovieDetails(@Path("movieId") movieId:Int): MoviesResult
+
+    @Headers(
+        "Authorization:Bearer $API_KEY",
+        "Accept:application/json"
+    )
+    @GET("tv/{tvShowId}")
+    suspend fun getTvShowDetails(@Path("tvShowId") tvShowId:Int): TvSeriesResult
 
     @Headers(
         "Authorization:Bearer $API_KEY",
@@ -64,10 +72,18 @@ interface TMDBService {
     @POST("account/${ACCOUNT_ID}/favorite")
     suspend fun removeFavorite(@Body favoriteBody: ActionFavoriteBody): ActionFavoriteResponse
 
+    /*
+    @POST("account/${ACCOUNT_ID}/favorite")
+    suspend fun removeFavorite(@Body bodyFavorite: RemoveFavoriteBody,
+                               @Query("api_key") apiKey: String,
+                               @Query("session_id") sessionId: String)
+
+     */
 
     companion object {
         const val API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NDFhNGEzZDI4MmQ4MzZiNGRjNGI0ODRkNzUyYjgwYyIsIm5iZiI6MTcxOTQzMDA5NS41NTYzMDgsInN1YiI6IjY2N2FhNjBmZTFiZDQ4YzA2OTU2N2QwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.BPcFByS9V_Flyb3nsXWeTKTfSaMBCtYw7XdRMJvw4HQ"
         const val ACCOUNT_ID = "21348380"
+        const val SESSION_ID = "21348380"
     }
 
 }

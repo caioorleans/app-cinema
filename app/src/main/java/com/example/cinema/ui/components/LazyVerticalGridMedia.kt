@@ -108,7 +108,12 @@ fun ItemCardMovie(media:MediaResult, navController: NavController, showCloseButt
         modifier = Modifier
             .height(300.dp)
             .clip(RoundedCornerShape(8.dp))
-            .clickable { navController.navigate("details/${media.id}") }
+            .clickable { navController
+                .navigate(
+                    if(media.mediaType == MediaType.MOVIE)"details/movies/${media.id}"
+                    else "details/tvShow/${media.id}"
+                )
+            }
         ) {
 
         val posterPath = media.posterPath
