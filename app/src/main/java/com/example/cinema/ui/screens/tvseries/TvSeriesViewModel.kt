@@ -1,6 +1,7 @@
 
 package com.example.cinema.ui.screens.TvSeries
 
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -23,6 +24,7 @@ sealed interface TvSeriesUiState {
 }
 
 class TvSeriesViewModel : ViewModel() {
+    val stateScroll = LazyGridState()
 
     var listAllTvSeries:List<TvSeriesResult> by mutableStateOf (listOf() )
 

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -46,6 +47,7 @@ import com.example.cinema.ui.data.model.MediaResponse
 import com.example.cinema.ui.data.model.MediaResult
 import com.example.cinema.ui.data.model.MediaType
 import com.example.cinema.ui.screens.favorites.FavoriteViewModel
+import com.example.cinema.ui.screens.favorites.RemoveFavoriteUiState
 import com.example.cinema.ui.screens.home.MediaViewModel
 import com.example.cinema.ui.theme.Primary
 import com.example.cinema.ui.theme.Red
@@ -59,10 +61,12 @@ fun LazyVerticalGridMedia(
     listAllMedia: List<MediaResult> = listOf(),
     navController: NavController,
     showCloseButtonCards:Boolean = false,
-    nextPage:()->Int
+    nextPage:()->Int,
+    stateScroll: LazyGridState = rememberLazyGridState()
     ){
     val mediaViewModel: MediaViewModel = viewModel<MediaViewModel>()
     LazyVerticalGrid(
+        state = stateScroll,
         columns = GridCells.Adaptive(128.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -104,7 +108,8 @@ fun ItemCardMovie(media:MediaResult, navController: NavController, showCloseButt
             IconButtonCinema(Icons.Filled.Clear, "Menu", White, Red, 26.dp){
                 scope.launch {
                     favoriteViewModel.removeFavorite(media.id, media.mediaType)
-                    navController.navigate("favorites")
+                     navController.navigate("favorites")
+
                 }
             }
         }

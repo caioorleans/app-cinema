@@ -1,6 +1,8 @@
 
 package com.example.cinema.ui.screens.home
 
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -24,6 +26,8 @@ sealed interface MediaUiState {
 }
 
 class MediaViewModel : ViewModel() {
+
+    val stateScroll = LazyGridState()
 
     var listAllMedia:List<MediaResult> by mutableStateOf (listOf() )
 

@@ -34,7 +34,8 @@ fun MoviesScreen(
                 moviesViewModel.listAllMovies,
                 navController,
                 false,
-                plusPage
+                plusPage,
+                moviesViewModel.stateScroll
             )
             is MoviesUiState.Error -> {}
             is MoviesUiState.Loading -> LoadingIndicator()

@@ -2,6 +2,7 @@ package com.example.cinema.ui.screens.home
 
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +28,8 @@ fun HomeScreen(
         nextPage++
     }
 
+
+
     Surface(modifier = modifier.fillMaxSize()) {
 
         when (moviesUiState) {
@@ -34,7 +37,8 @@ fun HomeScreen(
                 mediaViewModel.listAllMedia,
                 navController,
                 false,
-                plusPage
+                plusPage,
+                mediaViewModel.stateScroll
             )
             is MediaUiState.Error -> {}
             is MediaUiState.Loading -> LoadingIndicator()

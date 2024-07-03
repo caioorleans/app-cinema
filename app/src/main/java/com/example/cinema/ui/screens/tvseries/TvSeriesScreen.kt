@@ -34,7 +34,8 @@ fun TvSeriesScreen(
                 tvSeriesViewModel.listAllTvSeries,
                 navController,
                 false,
-                plusPage
+                plusPage,
+                tvSeriesViewModel.stateScroll
             )
             is TvSeriesUiState.Error -> {}
             is TvSeriesUiState.Loading -> LoadingIndicator()

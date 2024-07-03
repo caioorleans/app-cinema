@@ -18,6 +18,7 @@ import com.example.cinema.ui.data.model.MediaResult
 fun FavoritesScreen(
     modifier:Modifier = Modifier,
     favoriteUiState: FavoriteUiState,
+
     navController: NavController,
     favoriteViewModel: FavoriteViewModel
 ) {
@@ -35,11 +36,13 @@ fun FavoritesScreen(
                 favoriteViewModel.listAllFavorite,
                 navController,
                 true,
-                plusPage
+                plusPage,
+                favoriteViewModel.stateScroll
             )
             is FavoriteUiState.Error -> {}
             is FavoriteUiState.Loading -> LoadingIndicator()
         }
+
 
     }
 }

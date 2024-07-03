@@ -2,6 +2,7 @@
 package com.example.cinema.ui.screens.favorites
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -34,6 +35,7 @@ sealed interface RemoveFavoriteUiState {
 
 @SuppressLint("MutableCollectionMutableState")
 class FavoriteViewModel : ViewModel() {
+    val stateScroll = LazyGridState()
 
     var listAllFavorite: MutableList<MediaResult> by mutableStateOf (mutableListOf() )
 
@@ -92,26 +94,25 @@ class FavoriteViewModel : ViewModel() {
         }
     }
 
-    suspend fun removeFavorite(mediaId:Int, mediaType: MediaType){
-        favoriteRemoveUiState = RemoveFavoriteUiState.Loading
-
+    fun removeFavorite(mediaId:Int, mediaType: MediaType){
+        viewModelScope.launch {
+            favoriteRemoveUiState = RemoveFavoriteUiState.Loading
             favoriteRemoveUiState = try {
                 val body = ActionFavoriteBody(
                     false,
                     mediaId,
                     if (mediaType == MediaType.MOVIE) "movie" else "tv"
                 )
-                val resultRemoveFavorite = TMDBApi.retrofitService.removeFavorite( body )
-                //listAllFavorite.remove( listAllFavorite.find { it.id == mediaId } )
+                val resultRemoveFavorite = TMDBApi.retrofitService.removeFavorite(body)
+                //listAllFavorite.remove(listAllFavorite.find { it.id == mediaId})
 
                 RemoveFavoriteUiState.Success(resultRemoveFavorite)
-            }catch (e: IOException) {
+            } catch (e: IOException) {
+                RemoveFavoriteUiState.Error
+            } catch (e: HttpException) {
                 RemoveFavoriteUiState.Error
             }
-            catch (e: HttpException) {
-                RemoveFavoriteUiState.Error
-            }
-
+        }
     }
 
 
