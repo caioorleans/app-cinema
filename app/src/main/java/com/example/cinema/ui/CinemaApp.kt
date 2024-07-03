@@ -204,7 +204,7 @@ fun CinemaTopAppBar(scrollBehavior: TopAppBarScrollBehavior, scope: CoroutineSco
             titleContentColor = White,
         ),
         title = {
-            IconButtonCinema(Icons.Filled.Home, "Home", White, { navController.navigate("home") })
+            IconButtonCinema(Icons.Filled.Home, "Home", White) { navController.navigate("home") }
         },
         navigationIcon = {
             IconButtonCinema(Icons.Filled.Menu, "Menu", White) {
@@ -217,7 +217,7 @@ fun CinemaTopAppBar(scrollBehavior: TopAppBarScrollBehavior, scope: CoroutineSco
             }
         },
         actions = {
-            IconButtonCinema(Icons.Filled.Favorite, "Favorite", Red,{ navController.navigate("favorites") })
+            IconButtonCinema(Icons.Filled.Favorite, "Favorite", Red){ navController.navigate("favorites") }
         },
         scrollBehavior = scrollBehavior,
     )

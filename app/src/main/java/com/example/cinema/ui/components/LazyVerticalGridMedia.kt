@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -44,6 +45,7 @@ import com.example.cinema.ui.screens.details.AddFavoriteViewModel
 import com.example.cinema.ui.screens.favorites.FavoriteViewModel
 import com.example.cinema.ui.screens.home.MediaViewModel
 import com.example.cinema.ui.theme.Primary
+import com.example.cinema.ui.theme.Red
 import com.example.cinema.ui.theme.Secondary
 import com.example.cinema.ui.theme.White
 import kotlinx.coroutines.launch
@@ -69,7 +71,7 @@ fun LazyVerticalGridMedia(
             .background(Secondary),
     ){
         items(listAllMedia){
-            ItemCardMovie(media = it, navController, showCloseButtonCards, it)
+            ItemCardMovie(media = it, navController, showCloseButtonCards)
         }
 
         item(span = { GridItemSpan(maxLineSpan) }) {
@@ -82,7 +84,7 @@ fun LazyVerticalGridMedia(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun ItemCardMovie(media:MediaResult, navController: NavController, showCloseButton:Boolean = false, mediaResult: MediaResult) {
+fun ItemCardMovie(media:MediaResult, navController: NavController, showCloseButton:Boolean = false) {
     val scope = rememberCoroutineScope()
     val favoriteViewModel = viewModel<FavoriteViewModel>()
 
@@ -96,9 +98,9 @@ fun ItemCardMovie(media:MediaResult, navController: NavController, showCloseButt
             horizontalArrangement = Arrangement.End,
 
         ){
-            IconButtonCinema(Icons.Filled.Info, "Menu", White){
+            IconButtonCinema(Icons.Filled.Clear, "Menu", White, Red, 26.dp){
                 scope.launch {
-                    favoriteViewModel.removeFavorite(mediaResult.id, MediaType.MOVIE)
+                    favoriteViewModel.removeFavorite(media.id, media.mediaType)
                     navController.navigate("favorites")
                 }
             }

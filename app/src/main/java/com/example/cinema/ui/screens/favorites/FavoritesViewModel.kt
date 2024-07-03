@@ -38,7 +38,7 @@ class FavoriteViewModel : ViewModel() {
     var favoriteRemoveUiState: RemoveFavoriteUiState by mutableStateOf(RemoveFavoriteUiState.Loading)
         private set
 
-        /** The mutable State that stores the status of the most recent request */
+    /** The mutable State that stores the status of the most recent request */
     var favoriteUiState: FavoriteUiState by mutableStateOf(FavoriteUiState.Loading)
         private set
 
@@ -51,7 +51,14 @@ class FavoriteViewModel : ViewModel() {
             favoriteUiState = FavoriteUiState.Loading
             favoriteUiState = try {
                 val resultFavoriteMovies = TMDBApi.retrofitService.getFavoriteMovies()
+                resultFavoriteMovies.results.forEach{
+                    it.mediaType = MediaType.MOVIE
+                }
                 val resultFavoriteTvSeries = TMDBApi.retrofitService.getFavoriteTvSeries()
+                resultFavoriteTvSeries.results.forEach{
+                    it.mediaType = MediaType.SERIE
+                }
+
                 listAllFavorite = listAllFavorite.plus(resultFavoriteMovies.results)
                 listAllFavorite = listAllFavorite.plus(resultFavoriteTvSeries.results)
 
@@ -89,7 +96,7 @@ class FavoriteViewModel : ViewModel() {
                 val body = ActionFavoriteBody(
                     false,
                     mediaId,
-                    if (mediaType == MediaType.MOVIE) "movie" else "serie"
+                    if (mediaType == MediaType.MOVIE) "movie" else "tv"
                 )
                 val resultRemoveFavorite = TMDBApi.retrofitService.removeFavorite( body )
                 RemoveFavoriteUiState.Success(resultRemoveFavorite)
