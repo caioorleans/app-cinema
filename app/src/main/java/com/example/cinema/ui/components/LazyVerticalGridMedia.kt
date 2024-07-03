@@ -15,23 +15,28 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -40,8 +45,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.cinema.ui.data.model.MediaResponse
 import com.example.cinema.ui.data.model.MediaResult
 import com.example.cinema.ui.data.model.MediaType
-import com.example.cinema.ui.screens.details.AddFavoriteUiState
-import com.example.cinema.ui.screens.details.AddFavoriteViewModel
 import com.example.cinema.ui.screens.favorites.FavoriteViewModel
 import com.example.cinema.ui.screens.home.MediaViewModel
 import com.example.cinema.ui.theme.Primary
@@ -58,9 +61,7 @@ fun LazyVerticalGridMedia(
     showCloseButtonCards:Boolean = false,
     nextPage:()->Int
     ){
-    val mediaViewModel:MediaViewModel = viewModel<MediaViewModel>()
-
-
+    val mediaViewModel: MediaViewModel = viewModel<MediaViewModel>()
     LazyVerticalGrid(
         columns = GridCells.Adaptive(128.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -79,6 +80,8 @@ fun LazyVerticalGridMedia(
         }
 
     }
+
+
 }
 
 
@@ -110,11 +113,12 @@ fun ItemCardMovie(media:MediaResult, navController: NavController, showCloseButt
         modifier = Modifier
             .height(300.dp)
             .clip(RoundedCornerShape(8.dp))
-            .clickable { navController
-                .navigate(
-                    if(media.mediaType == MediaType.MOVIE)"details/movies/${media.id}"
-                    else "details/tvShow/${media.id}"
-                )
+            .clickable {
+                navController
+                    .navigate(
+                        if (media.mediaType == MediaType.MOVIE) "details/movies/${media.id}"
+                        else "details/tvShow/${media.id}"
+                    )
             }
         ) {
 
@@ -148,6 +152,7 @@ fun BottomBar(moviesViewModel: MediaViewModel, nextPage:()->Int){
                 .height(50.dp),
             onClick = {
                 moviesViewModel.getNextPageMedia(nextPage())
+
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = White

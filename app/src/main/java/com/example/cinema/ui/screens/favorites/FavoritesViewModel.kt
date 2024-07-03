@@ -1,6 +1,7 @@
 
 package com.example.cinema.ui.screens.favorites
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -31,9 +32,10 @@ sealed interface RemoveFavoriteUiState {
     object Loading : RemoveFavoriteUiState
 }
 
+@SuppressLint("MutableCollectionMutableState")
 class FavoriteViewModel : ViewModel() {
 
-    var listAllFavorite:List<MediaResult> by mutableStateOf (listOf() )
+    var listAllFavorite: MutableList<MediaResult> by mutableStateOf (mutableListOf() )
 
     var favoriteRemoveUiState: RemoveFavoriteUiState by mutableStateOf(RemoveFavoriteUiState.Loading)
         private set
@@ -59,8 +61,8 @@ class FavoriteViewModel : ViewModel() {
                     it.mediaType = MediaType.SERIE
                 }
 
-                listAllFavorite = listAllFavorite.plus(resultFavoriteMovies.results)
-                listAllFavorite = listAllFavorite.plus(resultFavoriteTvSeries.results)
+                listAllFavorite = listAllFavorite.plus(resultFavoriteMovies.results).toMutableList()
+                listAllFavorite = listAllFavorite.plus(resultFavoriteTvSeries.results).toMutableList()
 
                 FavoriteUiState.Success(resultFavoriteTvSeries)
             } catch (e: IOException) {
@@ -78,8 +80,9 @@ class FavoriteViewModel : ViewModel() {
                 val resultFavoriteMovies = TMDBApi.retrofitService.getFavoriteMovies(nextPage)
                 val resultFavoriteTvSeries = TMDBApi.retrofitService.getFavoriteTvSeries(nextPage)
 
-                listAllFavorite = listAllFavorite.plus(resultFavoriteMovies.results)
-                listAllFavorite = listAllFavorite.plus(resultFavoriteTvSeries.results)
+                listAllFavorite = listAllFavorite.plus(resultFavoriteMovies.results).toMutableList()
+                listAllFavorite =
+                    listAllFavorite.plus(resultFavoriteTvSeries.results).toMutableList()
                 FavoriteUiState.Success(resultFavoriteTvSeries)
             } catch (e: IOException) {
                 FavoriteUiState.Error
@@ -91,7 +94,7 @@ class FavoriteViewModel : ViewModel() {
 
     suspend fun removeFavorite(mediaId:Int, mediaType: MediaType){
         favoriteRemoveUiState = RemoveFavoriteUiState.Loading
-        viewModelScope.launch {
+
             favoriteRemoveUiState = try {
                 val body = ActionFavoriteBody(
                     false,
@@ -99,6 +102,8 @@ class FavoriteViewModel : ViewModel() {
                     if (mediaType == MediaType.MOVIE) "movie" else "tv"
                 )
                 val resultRemoveFavorite = TMDBApi.retrofitService.removeFavorite( body )
+                //listAllFavorite.remove( listAllFavorite.find { it.id == mediaId } )
+
                 RemoveFavoriteUiState.Success(resultRemoveFavorite)
             }catch (e: IOException) {
                 RemoveFavoriteUiState.Error
@@ -106,7 +111,7 @@ class FavoriteViewModel : ViewModel() {
             catch (e: HttpException) {
                 RemoveFavoriteUiState.Error
             }
-        }
+
     }
 
 

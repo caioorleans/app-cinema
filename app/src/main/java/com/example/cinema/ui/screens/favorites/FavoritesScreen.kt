@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import com.example.cinema.R
 import com.example.cinema.ui.components.LazyVerticalGridMedia
 import com.example.cinema.ui.components.LoadingIndicator
+import com.example.cinema.ui.data.model.MediaResult
 
 @Composable
 fun FavoritesScreen(
