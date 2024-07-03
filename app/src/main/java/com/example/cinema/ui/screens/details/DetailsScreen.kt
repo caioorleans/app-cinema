@@ -2,6 +2,7 @@ package com.example.cinema.ui.screens.details
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
@@ -20,14 +22,18 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,6 +41,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.cinema.ui.components.LoadingIndicator
+import com.example.cinema.ui.components.YoutubeVideoPlayer
 import com.example.cinema.ui.data.model.MediaResult
 import com.example.cinema.ui.data.model.MediaType
 import com.example.cinema.ui.data.model.MovieDetails
@@ -46,10 +53,11 @@ import okhttp3.internal.wait
 @Composable
 fun DetailsScreen(
     movieUiState:MovieDetailsUiState,
+    trailerIdState: TrailerIdState,
     modifier: Modifier = Modifier){
 
     when(movieUiState){
-        is MovieDetailsUiState.Success -> DetailsBody(movieUiState.result)
+        is MovieDetailsUiState.Success -> DetailsBody(movieUiState.result, trailerIdState)
         is MovieDetailsUiState.Loading -> LoadingIndicator()
         is MovieDetailsUiState.Error -> {
             Text(
@@ -65,11 +73,15 @@ fun DetailsScreen(
 @Composable
 private fun DetailsBody(
     mediaResult: MediaResult,
+    trailerIdState: TrailerIdState,
     modifier: Modifier = Modifier){
     val scope = rememberCoroutineScope()
     val favoriteViewModel = viewModel<AddFavoriteViewModel>()
     val snackbarHostState = remember { SnackbarHostState() }
     val mediaType = mediaResult.mediaType
+    var showPlayer by remember {
+        mutableStateOf(false)
+    }
 
     Surface(
         modifier.fillMaxSize()
@@ -151,23 +163,30 @@ private fun DetailsBody(
                 )
                 Row {
                     val shape = RoundedCornerShape(10.dp)
-                    Button(
-                        onClick = { /*TODO*/ },
-                        shape = shape,
-                        colors = ButtonColors(
-                            containerColor = Color.Red,
-                            contentColor = Color.White,
-                            disabledContentColor = Color.DarkGray,
-                            disabledContainerColor = Color.Gray
-                        ),
-                        modifier = modifier.padding(end = 10.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.PlayArrow,
-                            contentDescription = "Play icon",
-                            modifier = modifier.padding(end = 4.dp)
-                        )
-                        Text(text = "Trailer")
+                    when (trailerIdState) {
+                        is TrailerIdState.IsNotNull -> {
+                            Button(
+                                onClick = {
+                                    showPlayer = true
+                                },
+                                shape = shape,
+                                colors = ButtonColors(
+                                    containerColor = Color.Red,
+                                    contentColor = Color.White,
+                                    disabledContentColor = Color.DarkGray,
+                                    disabledContainerColor = Color.Gray
+                                ),
+                                modifier = modifier.padding(end = 10.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.PlayArrow,
+                                    contentDescription = "Play icon",
+                                    modifier = modifier.padding(end = 4.dp)
+                                )
+                                Text(text = "Trailer")
+                            }
+                        }
+                        is TrailerIdState.IsNull -> {}
                     }
                     OutlinedButton(
                         onClick = {
@@ -201,6 +220,39 @@ private fun DetailsBody(
         }
         SnackbarHost(
             hostState = snackbarHostState
+        )
+        when (trailerIdState) {
+            is TrailerIdState.IsNotNull -> {
+                if (showPlayer){
+                    PlayerContainer(id = trailerIdState.id) { showPlayer = false }
+                }
+            }
+            is TrailerIdState.IsNull -> {}
+        }
+    }
+}
+
+@Composable
+fun PlayerContainer(id:String, action: ()->Unit){
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+    ) {
+        Row(modifier = Modifier.align(Alignment.Center)) {
+            YoutubeVideoPlayer(
+                youtubeVideoId = id,
+                lifecycleOwner = LocalLifecycleOwner.current
+            )
+        }
+        Icon(
+            imageVector = Icons.Filled.Close,
+            contentDescription = "Close player",
+            tint = Color.White,
+            modifier = Modifier
+                .padding(top = 10.dp, end = 10.dp)
+                .align(Alignment.TopEnd)
+                .clickable { action() }
         )
     }
 }

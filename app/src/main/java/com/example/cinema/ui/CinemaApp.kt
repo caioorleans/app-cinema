@@ -183,7 +183,7 @@ fun CinemaApp() {
                                             }
                                         }
                                     )
-                                    DetailsScreen(viewModel.movieUiState)
+                                    DetailsScreen(viewModel.movieUiState, viewModel.trailerState)
                                 }
                         }
 

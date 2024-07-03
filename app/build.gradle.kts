@@ -71,6 +71,8 @@ dependencies {
 
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
 
+    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.28")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

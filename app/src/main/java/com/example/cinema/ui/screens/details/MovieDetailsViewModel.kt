@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.cinema.ui.data.TMDBApi
 import com.example.cinema.ui.data.model.MediaResult
 import com.example.cinema.ui.data.model.MediaType
-import com.example.cinema.ui.data.model.MovieDetails
+import com.example.cinema.ui.data.model.VideoInfo
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -20,6 +20,11 @@ sealed interface MovieDetailsUiState {
     data object Loading : MovieDetailsUiState
 }
 
+sealed interface TrailerIdState {
+    data class IsNotNull(val id:String): TrailerIdState
+    data object IsNull:TrailerIdState
+}
+
 class MovieDetailsViewModel(
     private val movieId:Int,
     val mediaType: MediaType
@@ -27,11 +32,17 @@ class MovieDetailsViewModel(
     var movieUiState:MovieDetailsUiState by mutableStateOf(MovieDetailsUiState.Loading)
         private set
 
+    var trailerState:TrailerIdState by mutableStateOf(TrailerIdState.IsNull)
+        private set
+
+    var showTrailer by mutableStateOf(false)
+
     init {
         getMovieDetails(movieId)
+        getMovieTrailerId(movieId)
     }
 
-    fun getMovieDetails(movieId:Int){
+    private fun getMovieDetails(movieId:Int){
         viewModelScope.launch {
             movieUiState = MovieDetailsUiState.Loading
             movieUiState = try {
@@ -47,6 +58,34 @@ class MovieDetailsViewModel(
             catch (e: HttpException) {
                 e.message?.let { Log.e("", it) }
                 MovieDetailsUiState.Error
+            }
+        }
+    }
+
+    private fun getMovieTrailerId(mediaId: Int){
+        viewModelScope.launch {
+            trailerState = try {
+                val videos =
+                    if(mediaType == MediaType.MOVIE) TMDBApi.retrofitService.getMovieVideos(mediaId)
+                    else TMDBApi.retrofitService.getTvVideos(mediaId)
+
+                var trailers = videos.results.filter { it.type == "Trailer" }
+                if (trailers.isEmpty()){
+                    trailers = videos.results.filter { it.type == "Teaser" }
+                }
+                TrailerIdState.IsNotNull(trailers[0].key)
+            }
+            catch (e: IOException) {
+                e.message?.let { Log.e("", it) }
+                TrailerIdState.IsNull
+            }
+            catch (e: HttpException) {
+                e.message?.let { Log.e("", it) }
+                TrailerIdState.IsNull
+            }
+            catch (e: IndexOutOfBoundsException){
+                e.message?.let { Log.e("", it) }
+                TrailerIdState.IsNull
             }
         }
     }

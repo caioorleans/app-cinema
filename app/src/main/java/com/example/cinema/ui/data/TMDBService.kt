@@ -6,6 +6,7 @@ import com.example.cinema.ui.data.model.MoviesResult
 import com.example.cinema.ui.data.model.ActionFavoriteResponse
 import com.example.cinema.ui.data.model.TvSeriesResponse
 import com.example.cinema.ui.data.model.TvSeriesResult
+import com.example.cinema.ui.data.model.VideosResult
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -64,6 +65,20 @@ interface TMDBService {
     )
     @GET("account/${ACCOUNT_ID}/favorite/tv")
     suspend fun getFavoriteTvSeries(@Query("page") page:Int = 1):TvSeriesResponse
+
+    @Headers(
+        "Authorization:Bearer $API_KEY",
+        "Accept:application/json"
+    )
+    @GET("movie/{movieId}/videos")
+    suspend fun getMovieVideos(@Path("movieId") movieId:Int):VideosResult
+
+    @Headers(
+        "Authorization:Bearer $API_KEY",
+        "Accept:application/json"
+    )
+    @GET("tv/{videoId}/videos")
+            suspend fun getTvVideos(@Path("videoId") movieId:Int):VideosResult
 
     @Headers(
         "Authorization:Bearer $API_KEY",
