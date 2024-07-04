@@ -108,9 +108,9 @@ fun ItemCardMovie(media:MediaResult, navController: NavController, showCloseButt
             IconButtonCinema(Icons.Filled.Clear, "Menu", White, Red, 26.dp){
                 scope.launch {
                     favoriteViewModel.removeFavorite(media.id, media.mediaType)
-                     navController.navigate("favorites")
+                    navController.navigate("favorites")
 
-                }
+               }
             }
         }
 
