@@ -95,7 +95,7 @@ class FavoriteViewModel : ViewModel() {
     }
 
     suspend fun removeFavorite(mediaId:Int, mediaType: MediaType){
-        //viewModelScope.launch {
+
             favoriteRemoveUiState = RemoveFavoriteUiState.Loading
             favoriteRemoveUiState = try {
                 val body = ActionFavoriteBody(
@@ -112,7 +112,7 @@ class FavoriteViewModel : ViewModel() {
             } catch (e: HttpException) {
                 RemoveFavoriteUiState.Error
             }
-        //}
+
     }
 
 
