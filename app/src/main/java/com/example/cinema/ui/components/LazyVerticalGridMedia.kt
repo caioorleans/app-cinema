@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -65,9 +67,10 @@ fun LazyVerticalGridMedia(
     stateScroll: LazyGridState = rememberLazyGridState()
     ){
     val mediaViewModel: MediaViewModel = viewModel<MediaViewModel>()
+    val screenWidth = LocalConfiguration.current.screenWidthDp
     LazyVerticalGrid(
         state = stateScroll,
-        columns = GridCells.Adaptive(128.dp),
+        columns = if(screenWidth < 600) GridCells.Fixed(2) else GridCells.Fixed(3),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
@@ -109,14 +112,13 @@ fun ItemCardMovie(media:MediaResult, navController: NavController, showCloseButt
                 scope.launch {
                     favoriteViewModel.removeFavorite(media.id, media.mediaType)
                     navController.navigate("favorites")
-
                }
             }
         }
 
     Box(
         modifier = Modifier
-            .height(300.dp)
+            .aspectRatio(2f/3f)
             .clip(RoundedCornerShape(8.dp))
             .clickable {
                 navController
@@ -134,7 +136,8 @@ fun ItemCardMovie(media:MediaResult, navController: NavController, showCloseButt
             model = "https://image.tmdb.org/t/p/original$posterPath",
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize(),
         ) {
             it.diskCacheStrategy(DiskCacheStrategy.ALL)
         }
