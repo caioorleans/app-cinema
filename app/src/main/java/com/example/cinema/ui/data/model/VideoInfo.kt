@@ -1,13 +1,18 @@
 package com.example.cinema.ui.data.model
 
+import com.google.gson.annotations.SerializedName
+
 data class VideoInfo(
     val id: String,
-    val iso_3166_1: String,
-    val iso_639_1: String,
+    @SerializedName("iso_3166_1")
+    val iso31661: String,
+    @SerializedName("iso_639_1")
+    val iso6391: String,
     val key: String,
     val name: String,
     val official: Boolean,
-    val published_at: String,
+    @SerializedName("published_at")
+    val publishedAt: String,
     val site: String,
     val size: Int,
     val type: String

@@ -1,35 +1,56 @@
 package com.example.cinema.ui.data.model
 
+import com.google.gson.annotations.SerializedName
+
 data class TvShowDetails(
     val adult: Boolean,
-    val backdrop_path: Any,
-    val created_by: List<Any>,
-    val episode_run_time: List<Int>,
-    val first_air_date: String,
+    @SerializedName("backdrop_path")
+    val backdropPath: Any,
+    @SerializedName("created_by")
+    val createdBy: List<Any>,
+    @SerializedName("episode_run_time")
+    val episodeRunTime: List<Int>,
+    @SerializedName("first_air_date")
+    val firstAirDate: String,
     val genres: List<Any>,
     val homepage: String,
     val id: Int,
-    val in_production: Boolean,
+    @SerializedName("in_production")
+    val inProduction: Boolean,
     val languages: List<Any>,
-    val last_air_date: Any,
-    val last_episode_to_air: Any,
+    @SerializedName("last_air_date")
+    val lastAirDate: Any,
+    @SerializedName("last_episode_to_air")
+    val lastEpisodeToAir: Any,
     val name: String,
-    val next_episode_to_air: Any,
-    val number_of_episodes: Int,
-    val number_of_seasons: Int,
-    val origin_country: List<Any>,
-    val original_language: String,
-    val original_name: String,
+    @SerializedName("next_episode_to_air")
+    val nextEpisodeToAir: Any,
+    @SerializedName("number_of_episodes")
+    val numberOfEpisodes: Int,
+    @SerializedName("number_of_seasons")
+    val numberOfSeasons: Int,
+    @SerializedName("origin_country")
+    val originCountry: List<Any>,
+    @SerializedName("original_language")
+    val originalLanguage: String,
+    @SerializedName("original_name")
+    val originalName: String,
     val overview: String,
     val popularity: Double,
-    val poster_path: Any,
-    val production_companies: List<Any>,
-    val production_countries: List<Any>,
+    @SerializedName("poster_path")
+    val posterPath: Any,
+    @SerializedName("production_companies")
+    val productionCompanies: List<Any>,
+    @SerializedName("production_countries")
+    val productionCountries: List<Any>,
     val seasons: List<Any>,
-    val spoken_languages: List<Any>,
+    @SerializedName("spoken_languages")
+    val spokenLanguages: List<Any>,
     val status: String,
     val tagline: String,
     val type: String,
-    val vote_average: Double,
-    val vote_count: Int
+    @SerializedName("vote_average")
+    val voteAverage: Double,
+    @SerializedName("vote_count")
+    val voteCount: Int
 )

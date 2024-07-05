@@ -137,7 +137,7 @@ private fun DetailsBody(
                         modifier = rowModifier
                     )
                     Text(
-                        text = mediaResult.voteAverage.toString(),
+                        text = "%.1f".format(mediaResult.voteAverage),
                         color = Color.Green,
                         modifier = rowModifier
                     )
